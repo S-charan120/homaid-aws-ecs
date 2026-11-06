@@ -47,6 +47,34 @@ jobs:
         run: docker build -t homaid-api:test ./api
       - name: Build web image
         run: docker build -t homaid-web:test ./web
+      - name: Exercise booking lifecycle with MongoDB
+        env:
+          ADMIN_API_TOKEN: local-ci-only-token
+        run: |
+          set -euo pipefail
+          docker compose up -d --build
+          cleanup() { docker compose down -v --remove-orphans; }
+          trap cleanup EXIT
+          for attempt in $(seq 1 45); do
+            if curl -fsS http://localhost:8080/api/services >/tmp/homaid-services.json; then break; fi
+            sleep 2
+          done
+          jq -e '.items | length >= 1' /tmp/homaid-services.json >/dev/null
+          SCHEDULED_AT="$(date -u -d '+2 hours' '+%Y-%m-%dT%H:%M:%SZ')"
+          PAYLOAD="$(jq -n --arg scheduledAt "$SCHEDULED_AT" '{serviceId:"cleaning",customerName:"CI Test Customer",customerEmail:"ci-test@example.com",address:"123 Integration Test Street",scheduledAt:$scheduledAt,notes:"Automated CI booking lifecycle"}')"
+          BOOKING="$(curl -fsS -X POST http://localhost:8080/api/bookings -H 'Content-Type: application/json' -H 'Idempotency-Key: gha-${{ github.run_id }}-${{ github.run_attempt }}' -d "$PAYLOAD")"
+          BOOKING_ID="$(printf '%s' "$BOOKING" | jq -r .bookingId)"
+          ACCESS_TOKEN="$(printf '%s' "$BOOKING" | jq -r .accessToken)"
+          test -n "$BOOKING_ID" && test -n "$ACCESS_TOKEN"
+          for status in confirmed in_progress completed; do
+            curl -fsS -X PATCH "http://localhost:8080/api/bookings/$BOOKING_ID/status" \
+              -H 'Content-Type: application/json' \
+              -H 'X-Admin-Token: local-ci-only-token' \
+              -d "$(jq -n --arg status "$status" '{status:$status}')" >/tmp/homaid-status.json
+            jq -e --arg status "$status" '.status == $status' /tmp/homaid-status.json >/dev/null
+          done
+          curl -fsS "http://localhost:8080/api/bookings/$BOOKING_ID" -H "X-Booking-Token: $ACCESS_TOKEN" | jq -e '.status == "completed"' >/dev/null
+          echo "Booking creation, admin state transitions and customer-token retrieval passed."
       - name: Upload generated dependency lockfiles
         if: always()
         uses: actions/upload-artifact@v4
