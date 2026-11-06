@@ -1,0 +1,19 @@
+{
+  "name": "homaid-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Home services booking REST API",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test",
+    "check": "node --check src/server.js && node --check src/domain.js"
+  },
+  "engines": { "node": ">=22" },
+  "dependencies": {
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "express-rate-limit": "^8.1.0",
+    "mongodb": "^6.20.0"
+  }
+}
