@@ -95,7 +95,7 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           API_REPOSITORY: ${{ vars.ECR_API_REPOSITORY }}
           WEB_REPOSITORY: ${{ vars.ECR_WEB_REPOSITORY }}
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: sha-${{ github.sha }}
         run: |
           set -euo pipefail
           test -n "$CLUSTER" && test -n "$API_SERVICE" && test -n "$WEB_SERVICE"
