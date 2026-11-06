@@ -49,7 +49,7 @@ variable "github_oidc_provider_arn" {
 }
 variable "create_github_oidc_provider" {
   type    = bool
-  default = false
+  default = true
 }
 variable "mongodb_uri_secret_name" {
   type    = string
