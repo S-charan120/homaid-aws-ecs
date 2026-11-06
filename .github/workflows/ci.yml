@@ -37,6 +37,16 @@ jobs:
         run: docker build -t homaid-api:test ./api
       - name: Build web image
         run: docker build -t homaid-web:test ./web
+      - name: Upload generated dependency lockfiles
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: homaid-npm-lockfiles
+          path: |
+            api/package-lock.json
+            web/package-lock.json
+          if-no-files-found: warn
+          retention-days: 7
 
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.AWS_ROLE_TO_ASSUME != ''
