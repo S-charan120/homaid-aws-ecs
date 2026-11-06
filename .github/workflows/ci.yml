@@ -83,10 +83,18 @@ jobs:
           IMAGE_TAG: sha-${{ github.sha }}
         run: |
           set -euo pipefail
-          docker build -t "$REGISTRY/$API_REPOSITORY:$IMAGE_TAG" ./api
-          docker build -t "$REGISTRY/$WEB_REPOSITORY:$IMAGE_TAG" ./web
-          docker push "$REGISTRY/$API_REPOSITORY:$IMAGE_TAG"
-          docker push "$REGISTRY/$WEB_REPOSITORY:$IMAGE_TAG"
+          if ! aws ecr describe-images --repository-name "$API_REPOSITORY" --image-ids imageTag="$IMAGE_TAG" >/dev/null 2>&1; then
+            docker build -t "$REGISTRY/$API_REPOSITORY:$IMAGE_TAG" ./api
+            docker push "$REGISTRY/$API_REPOSITORY:$IMAGE_TAG"
+          else
+            echo "API image tag already exists; reusing immutable image $IMAGE_TAG"
+          fi
+          if ! aws ecr describe-images --repository-name "$WEB_REPOSITORY" --image-ids imageTag="$IMAGE_TAG" >/dev/null 2>&1; then
+            docker build -t "$REGISTRY/$WEB_REPOSITORY:$IMAGE_TAG" ./web
+            docker push "$REGISTRY/$WEB_REPOSITORY:$IMAGE_TAG"
+          else
+            echo "Web image tag already exists; reusing immutable image $IMAGE_TAG"
+          fi
       - name: Register immutable task definitions and roll out ECS
         env:
           CLUSTER: ${{ vars.ECS_CLUSTER }}
