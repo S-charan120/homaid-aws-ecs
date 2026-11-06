@@ -19,7 +19,7 @@ jobs:
           node-version: 22
       - name: Install API dependencies
         working-directory: api
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
       - name: API tests and syntax
         working-directory: api
         run: npm test && npm run check
