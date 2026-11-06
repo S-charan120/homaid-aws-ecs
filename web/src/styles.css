@@ -1,0 +1,419 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap');
+
+:root {
+  font-family: 'DM Sans', sans-serif;
+  color: #242a25;
+  background: #f7f5f0;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.app-shell {
+  max-width: 1324px;
+  margin: 0 auto;
+  padding: 0 42px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-nav {
+  height: 78px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  border-bottom: 1px solid #e5e0d7;
+  color: #69716a;
+  font-size: 13px;
+}
+
+.brand {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -1.5px;
+  color: #1e3329;
+  margin-right: auto;
+}
+
+.brand span {
+  color: #c7784b;
+}
+
+.nav-link {
+  color: #26382d;
+  border-bottom: 1px solid #c7784b;
+  padding-bottom: 4px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: 40px;
+  padding: 86px 0 96px;
+}
+
+.eyebrow {
+  letter-spacing: 2px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #b26b42;
+}
+
+.hero h1 {
+  font-size: clamp(54px, 7vw, 88px);
+  line-height: 0.99;
+  letter-spacing: -5px;
+  margin: 20px 0;
+}
+
+.hero h1 em,
+.booking-section h2 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 500;
+  color: #b26b42;
+}
+
+.lead {
+  font-size: 17px;
+  line-height: 1.7;
+  color: #6d746c;
+  max-width: 460px;
+}
+
+.primary-link {
+  display: inline-flex;
+  gap: 32px;
+  align-items: center;
+  background: #253b30;
+  color: white;
+  padding: 16px 22px;
+  margin-top: 22px;
+  border-radius: 3px;
+  font-size: 13px;
+}
+
+.proof {
+  display: flex;
+  gap: 24px;
+  margin-top: 45px;
+  color: #68736b;
+  font-size: 11px;
+}
+
+.hero-card {
+  height: 360px;
+  background: #e8e7d9;
+  border-radius: 4px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.sun {
+  position: absolute;
+  right: 15%;
+  top: 12%;
+  font-size: 65px;
+  color: #c7794e;
+}
+
+.home-shape {
+  font-size: 190px;
+  color: #536a58;
+  line-height: 1;
+}
+
+.hero-card p {
+  position: absolute;
+  bottom: 14px;
+  left: 25px;
+  font-size: 14px;
+  color: #344538;
+  line-height: 1.6;
+}
+
+.section {
+  padding: 54px 0 88px;
+  border-top: 1px solid #e5e0d7;
+}
+
+.section-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.section h2,
+.booking-section h2 {
+  font-size: 42px;
+  letter-spacing: -1.8px;
+  margin: 8px 0;
+}
+
+.section-head > p {
+  color: #757c74;
+  font-size: 13px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.service-card {
+  text-align: left;
+  background: #fffefa;
+  border: 1px solid #e9e3d8;
+  padding: 22px;
+  min-height: 218px;
+  cursor: pointer;
+  color: inherit;
+  border-radius: 3px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.service-card.active {
+  border-color: #b26b42;
+  box-shadow: inset 0 0 0 1px #b26b42;
+}
+
+.service-number {
+  font-size: 10px;
+  color: #a9a69d;
+  display: block;
+}
+
+.service-icon {
+  font-size: 28px;
+  color: #b26b42;
+  display: block;
+  margin: 18px 0;
+}
+
+.service-card h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.service-card p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #777d74;
+  min-height: 38px;
+}
+
+.service-card b {
+  font-size: 12px;
+  color: #344638;
+}
+
+.notice {
+  color: #8f5033;
+  font-size: 12px;
+}
+
+.booking-section {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 80px;
+  padding: 65px 0 90px;
+  border-top: 1px solid #e5e0d7;
+}
+
+.booking-section h2 {
+  font-size: 54px;
+  line-height: 1.05;
+}
+
+.booking-section > div > p:not(.eyebrow) {
+  color: #70776f;
+  line-height: 1.7;
+  max-width: 350px;
+}
+
+.note {
+  margin-top: 30px;
+  border-left: 2px solid #bd7950;
+  padding: 10px 15px;
+  font-size: 12px;
+  color: #666f66;
+  line-height: 1.6;
+}
+
+.booking-form {
+  background: #fffefa;
+  border: 1px solid #e9e3d8;
+  padding: 30px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 18px;
+}
+
+.booking-form h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  grid-column: 1 / -1;
+}
+
+.booking-form label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #576159;
+  display: grid;
+  gap: 7px;
+}
+
+.booking-form label:nth-of-type(4),
+.booking-form label:nth-of-type(6) {
+  grid-column: 1 / -1;
+}
+
+.booking-form input,
+.booking-form select,
+.booking-form textarea {
+  font: inherit;
+  font-size: 13px;
+  border: 1px solid #deddd4;
+  padding: 11px;
+  background: #faf9f5;
+  border-radius: 2px;
+  width: 100%;
+  color: #26352b;
+}
+
+.submit {
+  grid-column: 1 / -1;
+  background: #263d31;
+  border: 0;
+  color: #fff;
+  padding: 14px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+}
+
+.submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.form-status {
+  font-size: 12px;
+  color: #8a553a;
+  min-height: 16px;
+}
+
+.receipt {
+  display: grid;
+  gap: 8px;
+  background: #eff2e9;
+  padding: 15px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.receipt code {
+  font-size: 11px;
+}
+
+.receipt small {
+  color: #68736b;
+}
+
+.site-footer {
+  border-top: 1px solid #e5e0d7;
+  padding: 25px 0;
+  display: flex;
+  justify-content: space-between;
+  color: #778076;
+  font-size: 11px;
+}
+
+.site-footer b {
+  color: #253b30;
+  font-size: 18px;
+}
+
+@media (max-width: 800px) {
+  .app-shell {
+    padding: 0 20px;
+  }
+
+  .hero,
+  .booking-section {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+
+  .hero {
+    padding: 55px 0;
+  }
+
+  .hero-card {
+    height: 250px;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .booking-section {
+    gap: 25px;
+  }
+
+  .section-head {
+    display: block;
+  }
+
+  .booking-form {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-nav > span {
+    display: none;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-form {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-form label {
+    grid-column: 1 / -1;
+  }
+
+  .site-footer {
+    display: grid;
+    gap: 8px;
+  }
+
+  .hero h1 {
+    letter-spacing: -3px;
+  }
+}
