@@ -4,7 +4,6 @@
 terraform.tfstate
 terraform.tfstate.*
 .terraform/
-.terraform.lock.hcl
 *.tfvars
 !terraform.tfvars.example
 node_modules/
