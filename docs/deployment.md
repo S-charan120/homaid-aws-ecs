@@ -25,7 +25,7 @@ terraform show tfplan
 Review every resource and cost before applying the saved plan.
 
 ## 3. GitHub OIDC
-Create or reuse the AWS IAM OIDC provider for `https://token.actions.githubusercontent.com`. The Terraform role trust is restricted to `S-charan120/homaid-aws-ecs` on `refs/heads/main`. The workflow uses short-lived OIDC tokens; do not create IAM user access keys for GitHub.
+The example defaults to creating the AWS IAM OIDC provider for `https://token.actions.githubusercontent.com`. If your AWS account already has that provider, set `create_github_oidc_provider = false` and supply its ARN in `github_oidc_provider_arn`. The Terraform role trust is restricted to `S-charan120/homaid-aws-ecs` on `refs/heads/main`. The workflow uses short-lived OIDC tokens; do not create IAM user access keys for GitHub.
 
 Set these repository **Actions variables** after Terraform apply:
 
