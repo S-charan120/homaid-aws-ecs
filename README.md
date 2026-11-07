@@ -24,7 +24,7 @@ flowchart LR
   ALB -->|/api/*| API[ECS Fargate API]
   ALB -->|/*| WEB[ECS Fargate Web]
   API --> DB[(MongoDB Atlas / external MongoDB)]
-  API --> SM[Secrets Manager]
+  ECS[ECS Fargate tasks] -->|task execution role injects at startup| SM[Secrets Manager]
   API --> CW[CloudWatch]
   WEB --> CW
   GH[GitHub Actions] -->|OIDC| IAM[AWS deployment role]
