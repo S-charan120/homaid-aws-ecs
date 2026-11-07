@@ -52,7 +52,7 @@ aws secretsmanager put-secret-value --secret-id "$(terraform output -raw admin_t
 Allowlist the NAT Gateway public IP from `terraform output -raw nat_gateway_public_ip` in Atlas, or use private connectivity where available. Use a dedicated database user with least privilege, and confirm TLS is enabled.
 
 ## 5. First deployment
-The ECS services and task definitions are created by Terraform with `latest` image placeholders. Once secrets are populated and repository variables are set, push to `main`. GitHub Actions tests the API, builds the frontend and images, pushes commit-SHA tags, registers new task-definition revisions using those immutable tags, updates the services and waits for stability.
+Terraform creates ECS services and task definitions using a `bootstrap` image tag so the service resources can be provisioned before the first CI release. The bootstrap tag is not a deployable image: the initial service tasks remain unhealthy until a real commit-SHA image is published and the deployment workflow registers task-definition revisions. Populate runtime secrets and repository variables, then push a validated commit to `main`. GitHub Actions tests the API, builds the frontend and images, pushes commit-SHA tags, registers new task-definition revisions using those immutable tags, updates the services and waits for stability.
 
 Check ALB target health and CloudWatch logs. If tasks fail before secrets are populated, they will not become healthy.
 
