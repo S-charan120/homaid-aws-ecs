@@ -2,6 +2,11 @@ aws_region = "ap-south-1"
 project_name = "homaid"
 environment = "production"
 github_repository = "S-charan120/homaid-aws-ecs"
+# Immutable IDs from GitHub repository metadata (do not substitute display names).
+github_repository_owner_id = "133835940"
+github_repository_id = "1448338738"
+# Must exactly match the deploy job's environment in .github/workflows/ci.yml.
+github_actions_environment = "aws-production"
 # Create/reuse the GitHub OIDC provider in this AWS account.
 create_github_oidc_provider = true
 # If reusing a provider, set its ARN and set create_github_oidc_provider = false.
