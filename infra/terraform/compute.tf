@@ -160,6 +160,7 @@ resource "aws_ecs_service" "api" {
   wait_for_steady_state              = false
   deployment_minimum_healthy_percent = 50
   deployment_maximum_percent         = 200
+  deployment_circuit_breaker { enable = true, rollback = true }
   health_check_grace_period_seconds  = 60
   network_configuration {
     subnets          = aws_subnet.private[*].id
