@@ -51,7 +51,7 @@ flowchart LR
 3. **Package** — build separate web/API images and tag them with the commit SHA.
 4. **Publish** — authenticate to AWS through GitHub OIDC and push immutable images to ECR.
 5. **Release** — register task-definition revisions and update the ECS services.
-6. **Verify** — wait for ECS stability (with service deployment circuit-breaker rollback enabled) and inspect target health, readiness, logs and alarms.
+6. **Verify** — wait for ECS stability (with deployment circuit-breaker rollback enabled on both API and web services) and inspect target health, readiness, logs and alarms.
 7. **Recover** — redeploy a known-good task-definition revision and confirm service health.
 
 Useful guides: [deployment](docs/deployment.md) · [security](docs/security.md) · [operations and acceptance](docs/operations-acceptance.md) · [incident runbook](docs/runbook.md) · [costs](docs/costs.md) · [metrics](docs/metrics.md).
