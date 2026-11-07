@@ -42,6 +42,7 @@ def main() -> None:
     readme = read("README.md")
     outputs = read("infra/terraform/outputs.tf")
     runbook = read("docs/runbook.md")
+    security = read("docs/security.md")
 
     owner, repository = variable_default(variables, "github_repository").split("/", maxsplit=1)
     owner_id = variable_default(variables, "github_repository_owner_id")

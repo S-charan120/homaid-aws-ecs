@@ -14,6 +14,6 @@
 - Use a private MongoDB connectivity option where feasible; otherwise tightly scope Atlas network access to the NAT egress IP.
 - Configure remote Terraform state with encryption, locking and least-privilege access.
 - Enable dependency/image scanning, secret scanning and patch automation.
-- Set ALB deletion protection, ECS deployment circuit breakers and WAF according to threat model.
+- Enable ALB deletion protection and WAF according to the threat model. ECS deployment circuit-breaker rollback is already enabled for both API and web services; verify it remains enabled after Terraform changes.
 - Review CloudWatch retention, alarm notification targets and incident ownership.
 - Validate backup/restore and MongoDB recovery procedures.
