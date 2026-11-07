@@ -27,3 +27,11 @@ test('readiness returns 503 until MongoDB is connected', async t => {
     assert.deepEqual(await response.json(), { status: 'not-ready' });
   });
 });
+
+test('malformed JSON is rejected with a client error', async t => {
+  await withServer(t, async base => {
+    const response = await fetch(`${base}/api/bookings`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{invalid' });
+    assert.equal(response.status, 400);
+    assert.deepEqual(await response.json(), { error: 'invalid JSON' });
+  });
+});
