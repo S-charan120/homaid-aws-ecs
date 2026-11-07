@@ -15,8 +15,8 @@ resource "aws_ecr_lifecycle_policy" "api" {
   policy = jsonencode({ rules = [{
     rulePriority = 1
     description  = "Keep latest 25 tagged images"
-    selection = { tagStatus = "tagged", tagPrefixList = ["sha-"], countType = "imageCountMoreThan", countNumber = 25 }
-    action    = { type = "expire" }
+    selection    = { tagStatus = "tagged", tagPrefixList = ["sha-"], countType = "imageCountMoreThan", countNumber = 25 }
+    action       = { type = "expire" }
   }] })
 }
 resource "aws_ecr_lifecycle_policy" "web" {
@@ -89,9 +89,9 @@ resource "aws_ecs_task_definition" "api" {
   memory                   = tostring(var.task_memory)
   execution_role_arn       = aws_iam_role.ecs_execution.arn
   container_definitions = jsonencode([{
-    name      = "api"
-    image     = "${aws_ecr_repository.api.repository_url}:bootstrap"
-    essential = true
+    name         = "api"
+    image        = "${aws_ecr_repository.api.repository_url}:bootstrap"
+    essential    = true
     portMappings = [{ containerPort = 8081, hostPort = 8081, protocol = "tcp" }]
     environment = [
       { name = "PORT", value = "8081" },
@@ -128,9 +128,9 @@ resource "aws_ecs_task_definition" "web" {
   memory                   = "512"
   execution_role_arn       = aws_iam_role.ecs_execution.arn
   container_definitions = jsonencode([{
-    name      = "web"
-    image     = "${aws_ecr_repository.web.repository_url}:bootstrap"
-    essential = true
+    name         = "web"
+    image        = "${aws_ecr_repository.web.repository_url}:bootstrap"
+    essential    = true
     portMappings = [{ containerPort = 80, hostPort = 80, protocol = "tcp" }]
     logConfiguration = {
       logDriver = "awslogs"
@@ -161,10 +161,10 @@ resource "aws_ecs_service" "api" {
   deployment_minimum_healthy_percent = 50
   deployment_maximum_percent         = 200
   deployment_circuit_breaker {
-    enable  = true
+    enable   = true
     rollback = true
   }
-  health_check_grace_period_seconds  = 60
+  health_check_grace_period_seconds = 60
   network_configuration {
     subnets          = aws_subnet.private[*].id
     security_groups  = [aws_security_group.tasks.id]
@@ -228,6 +228,6 @@ resource "aws_cloudwatch_metric_alarm" "alb_5xx" {
   threshold           = 5
   comparison_operator = "GreaterThanOrEqualToThreshold"
   dimensions          = { LoadBalancer = aws_lb.app.arn_suffix }
-  treat_missing_data = "notBreaching"
+  treat_missing_data  = "notBreaching"
   tags                = local.tags
 }

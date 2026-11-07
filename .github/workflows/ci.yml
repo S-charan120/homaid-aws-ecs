@@ -41,8 +41,7 @@ jobs:
       - name: Validate Terraform
         working-directory: infra/terraform
         run: |
-          terraform fmt -recursive
-          terraform fmt -check -recursive
+          terraform fmt -check -diff -recursive
           terraform init -backend=false
           terraform validate
       - name: Build API image

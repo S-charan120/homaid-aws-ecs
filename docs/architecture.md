@@ -15,9 +15,9 @@ flowchart TB
     ALB -->|/api/*| API[ECS Fargate API :8081]
     ALB -->|other paths| Web[ECS Fargate Web :80]
     API -->|TLS connection string| Mongo[(MongoDB Atlas / external)]
-    API --> Secrets[AWS Secrets Manager]
-    API --> Logs[CloudWatch Logs]
-    Web --> Logs
+    ECS[ECS tasks / execution role] -->|injects secrets at task startup| Secrets[AWS Secrets Manager]
+    API -->|stdout/stderr via awslogs| Logs[CloudWatch Logs]
+    Web -->|stdout/stderr via awslogs| Logs
     GH[GitHub Actions] -->|OIDC| IAM[AWS deploy role]
     GH --> ECR[Immutable ECR SHA images]
     ECR --> ECS[ECS task definitions / services]

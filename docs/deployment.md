@@ -2,7 +2,7 @@
 
 ## 1. Prerequisites
 - An AWS account with permission to provision VPC, EC2 networking, ALB, ECS, ECR, IAM, Secrets Manager, CloudWatch and optional Route 53.
-- Terraform 1.7+ and AWS provider 5.x.
+- Terraform 1.7+ and AWS provider 6.x (the configuration pins `~> 6.0`).
 - MongoDB Atlas or another reachable MongoDB endpoint.
 - GitHub repository admin permission to configure OIDC variables/environments.
 
