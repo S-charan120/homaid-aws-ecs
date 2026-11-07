@@ -86,7 +86,7 @@ def main() -> None:
     assert "both ECS services" in architecture.lower() or "api and web services" in architecture.lower(), (
         "architecture guide must describe rollback protection for both services"
     )
-    assert "both services" in readme.lower(), (
+    assert "both api and web services" in readme.lower(), (
         "README must describe rollback protection for both services"
     )
 
