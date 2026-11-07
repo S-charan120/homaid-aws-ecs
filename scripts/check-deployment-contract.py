@@ -98,8 +98,11 @@ def main() -> None:
     assert "proxy_pass" not in ecs_nginx, (
         "ECS Nginx must not depend on a Compose-only API hostname"
     )
-    assert "proxy_pass http://api:8081/api/" in compose_nginx, (
-        "local Compose Nginx must retain the API reverse proxy"
+    assert "resolver 127.0.0.11" in compose_nginx and "set $api_upstream api:8081" in compose_nginx, (
+        "Compose Nginx must use Docker DNS for runtime service discovery"
+    )
+    assert "proxy_pass http://$api_upstream$request_uri" in compose_nginx, (
+        "local Compose Nginx must retain the API reverse proxy without build-time DNS resolution"
     )
     assert "NGINX_CONFIG: nginx-compose.conf" in compose, (
         "Compose must select its service-DNS-aware Nginx configuration"
