@@ -83,7 +83,7 @@ MongoDB remains MongoDB (Atlas or an approved private endpoint); it is not silen
 
 - Application code, tests, Docker configuration, Terraform and CI/CD definitions are source-controlled.
 - Repository validation is repeatable through GitHub Actions; inspect the Actions tab for the latest run.
-- A green CI run is not evidence of a live AWS deployment. The deployment workflow is skipped until AWS account variables, OIDC trust and provisioned resources are configured.
+- A green CI run is not evidence of a live AWS deployment. The deployment workflow is skipped until AWS account variables, OIDC trust and provisioned resources are configured. Dependency lockfiles are committed and CI uses `npm ci`; validation does not rewrite the main branch.
 - The resume's **under-six-minute** release metric remains unverified until real deployment timestamps are collected consistently across multiple releases.
 - The baseline ALB listener is HTTP. Configure ACM, HTTPS and an HTTP-to-HTTPS redirect before using a public production domain.
 - The single NAT Gateway is a cost-optimized learning trade-off, not a multi-AZ resilience design. ALB, NAT, Fargate and CloudWatch can incur ongoing charges; use budgets and destroy lab resources when finished.
