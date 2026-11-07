@@ -22,7 +22,7 @@ Homaid is a full-stack home-services booking application delivered as two contai
 flowchart LR
   U[Browser] --> ALB[Application Load Balancer]
   ALB -->|/api/*| API[ECS Fargate API]
-  ALB -->|/*| WEB[ECS Fargate Web]
+  ALB -->|other paths| WEB[ECS Fargate Web / Nginx]
   API --> DB[(MongoDB Atlas / external MongoDB)]
   ECS[ECS Fargate tasks] -->|task execution role injects at startup| SM[Secrets Manager]
   API --> CW[CloudWatch]
@@ -51,7 +51,7 @@ flowchart LR
 3. **Package** — build separate web/API images and tag them with the commit SHA.
 4. **Publish** — authenticate to AWS through GitHub OIDC and push immutable images to ECR.
 5. **Release** — register task-definition revisions and update the ECS services.
-6. **Verify** — wait for ECS stability (with service deployment circuit-breaker rollback enabled) and inspect target health, readiness, logs and alarms.
+6. **Verify** — wait for ECS stability (with deployment circuit-breaker rollback enabled on both API and web services) and inspect target health, readiness, logs and alarms.
 7. **Recover** — redeploy a known-good task-definition revision and confirm service health.
 
 Useful guides: [deployment](docs/deployment.md) · [security](docs/security.md) · [operations and acceptance](docs/operations-acceptance.md) · [incident runbook](docs/runbook.md) · [costs](docs/costs.md) · [metrics](docs/metrics.md).
@@ -75,7 +75,7 @@ cd ../web && npm ci && npm run build
 
 ## AWS infrastructure and deployment
 
-Terraform provisions the AWS foundation. The GitHub Actions AWS deployment is intentionally opt-in and runs only on the configured main-branch release path. Before applying, configure encrypted remote state with locking, review the Terraform plan, configure GitHub OIDC trust, and populate runtime secret values in Secrets Manager.
+Terraform provisions the AWS foundation. The GitHub Actions AWS deployment is intentionally opt-in and runs after validation on a push to `main` or a manual dispatch against `main`. The protected `aws-production` environment and immutable environment-scoped OIDC trust are required. Before applying, configure encrypted remote state with locking, review the Terraform plan, configure GitHub OIDC trust, and populate runtime secret values in Secrets Manager.
 
 MongoDB remains MongoDB (Atlas or an approved private endpoint); it is not silently substituted with RDS. For Atlas, configure network access for the workload's egress or use private connectivity.
 

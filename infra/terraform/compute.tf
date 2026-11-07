@@ -188,7 +188,11 @@ resource "aws_ecs_service" "web" {
   wait_for_steady_state              = false
   deployment_minimum_healthy_percent = 50
   deployment_maximum_percent         = 200
-  health_check_grace_period_seconds  = 60
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
+  health_check_grace_period_seconds = 60
   network_configuration {
     subnets          = aws_subnet.private[*].id
     security_groups  = [aws_security_group.tasks.id]

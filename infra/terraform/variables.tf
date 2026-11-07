@@ -41,6 +41,25 @@ variable "task_memory" {
 variable "github_repository" {
   type    = string
   default = "S-charan120/homaid-aws-ecs"
+  validation {
+    condition     = length(split("/", var.github_repository)) == 2
+    error_message = "github_repository must use owner/repository format."
+  }
+}
+variable "github_repository_owner_id" {
+  type        = string
+  default     = "133835940"
+  description = "Immutable GitHub owner ID used in the OIDC subject for this repository."
+}
+variable "github_repository_id" {
+  type        = string
+  default     = "1448338738"
+  description = "Immutable GitHub repository ID used in the OIDC subject."
+}
+variable "github_actions_environment" {
+  type        = string
+  default     = "aws-production"
+  description = "GitHub Actions deployment environment; must match the deploy job environment."
 }
 variable "github_oidc_provider_arn" {
   type        = string

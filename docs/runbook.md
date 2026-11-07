@@ -3,7 +3,12 @@
 ## Check service health
 - ECS: inspect desired/running task counts and recent deployment events for both services.
 - ALB: inspect target-group health for API `/ready` and web `/health`.
-- CloudWatch: inspect `/ecs/homaid-production/api` and `/ecs/homaid-production/web`.
+- CloudWatch: use the Terraform outputs so custom project/environment names remain correct:
+
+  ```bash
+  aws logs tail "$(terraform -chdir=infra/terraform output -raw api_log_group_name)" --since 1h
+  aws logs tail "$(terraform -chdir=infra/terraform output -raw web_log_group_name)" --since 1h
+  ```
 - MongoDB: confirm Atlas availability, TLS connection and database-user permissions.
 
 ## Common symptoms
