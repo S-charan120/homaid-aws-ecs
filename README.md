@@ -85,7 +85,7 @@ MongoDB remains MongoDB (Atlas or an approved private endpoint); it is not silen
 - Repository validation is repeatable through GitHub Actions; inspect the Actions tab for the latest run.
 - The deployment workflow is opt-in and requires AWS account variables, OIDC trust and provisioned resources. Dependency lockfiles are committed and CI uses `npm ci`; validation does not rewrite the main branch.
 - The resume's **under-six-minute** release metric remains unverified until real deployment timestamps are collected consistently across multiple releases.
-- The baseline ALB listener is HTTP. Configure ACM, HTTPS and an HTTP-to-HTTPS redirect before using a public production domain.
+- Public deployment requires a Route 53 hostname and an issued same-region ACM certificate. Terraform provisions HTTPS:443 and redirects HTTP:80 to HTTPS; no public HTTP application URL is exposed.
 - The single NAT Gateway is a cost-optimized learning trade-off, not a multi-AZ resilience design. ALB, NAT, Fargate and CloudWatch can incur ongoing charges; use budgets and destroy lab resources when finished.
 
 ## Project intent
