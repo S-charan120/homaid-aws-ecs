@@ -22,10 +22,18 @@ terraform plan -out=tfplan
 terraform show tfplan
 ```
 
-Review every resource and cost before applying the saved plan.
+Review every resource and cost before applying the saved plan:
+
+```bash
+terraform apply tfplan
+```
+
+If state changes after planning, Terraform rejects the stale plan. Create and review a new plan before retrying.
 
 ## 3. GitHub OIDC
-The example defaults to creating the AWS IAM OIDC provider for `https://token.actions.githubusercontent.com`. If your AWS account already has that provider, set `create_github_oidc_provider = false` and supply its ARN in `github_oidc_provider_arn`. The Terraform role trust is restricted to `S-charan120/homaid-aws-ecs` on `refs/heads/main`. The workflow uses short-lived OIDC tokens; do not create IAM user access keys for GitHub.
+The example defaults to creating the AWS IAM OIDC provider for `https://token.actions.githubusercontent.com`. If your AWS account already has that provider, set `create_github_oidc_provider = false` and supply its ARN in `github_oidc_provider_arn`. The deploy job uses the GitHub Actions environment `aws-production`. Because this repository was created after 15 July 2026, its default OIDC subject includes immutable owner/repository IDs and the environment: `repo:S-charan120@133835940/homaid-aws-ecs@1448338738:environment:aws-production`. Terraform constructs this from the repository and ID variables; verify the result with `terraform output -raw github_oidc_subject` before configuring AWS trust.
+
+In GitHub, open **Settings → Environments → aws-production** and restrict deployment branches/tags to the `main` branch only. The OIDC subject is environment-scoped (not branch-scoped), so this environment rule is required in addition to the workflow's explicit `main`-branch condition. Keep `github_actions_environment` aligned with the workflow environment name. The workflow uses short-lived OIDC tokens; do not create IAM user access keys for GitHub.
 
 Set these repository **Actions variables** after Terraform apply:
 
@@ -39,7 +47,7 @@ Set these repository **Actions variables** after Terraform apply:
 | `ECS_API_SERVICE` | `ecs_api_service_name` |
 | `ECS_WEB_SERVICE` | `ecs_web_service_name` |
 
-The deploy job remains skipped until `AWS_ROLE_TO_ASSUME` is set. Pull requests run validation only.
+The deploy job remains skipped until `AWS_ROLE_TO_ASSUME` is set. A push to `main` or a manual `workflow_dispatch` with `main` selected can deploy after validation; dispatches from other branches and pull requests run validation only.
 
 ## 4. MongoDB and secrets
 Terraform creates empty secret containers. After apply, populate both:
