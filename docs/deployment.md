@@ -59,5 +59,5 @@ Check ALB target health and CloudWatch logs. If tasks fail before secrets are po
 ## 6. Route 53
 Optionally set `domain_name` and `hosted_zone_id` in `terraform.tfvars` to create an ALB alias record. The sample listener is HTTP-only; do not use it for a real production domain until an ACM certificate, HTTPS listener and HTTP-to-HTTPS redirect are configured.
 
-## 7. Rollback
+## 7. CI dependency reproducibility\nThe repository commits `api/package-lock.json` and `web/package-lock.json`. GitHub Actions installs from these lockfiles with `npm ci`; CI does not auto-commit dependency updates. Update dependencies deliberately in a reviewed commit (`npm install` in the relevant package directory), inspect the lockfile diff, then run the full validation workflow.\n\n## 8. Rollback
 Choose a previous commit-SHA image tag from ECR, register new API/web task-definition revisions that point to those images, update the two ECS services and wait for stability. Record the prior task-definition ARNs and validate both ALB target groups.
