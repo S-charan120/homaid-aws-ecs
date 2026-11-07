@@ -80,12 +80,27 @@ variable "admin_api_token_secret_name" {
 }
 variable "domain_name" {
   type        = string
-  default     = ""
-  description = "Optional Route 53 record. Configure ACM and HTTPS before using a real production domain."
+  description = "Required public application DNS name; HTTPS is mandatory."
+  validation {
+    condition     = length(trimspace(var.domain_name)) > 0
+    error_message = "domain_name must be set for the public HTTPS deployment."
+  }
 }
 variable "hosted_zone_id" {
-  type    = string
-  default = ""
+  type        = string
+  description = "Route 53 hosted zone ID for domain_name."
+  validation {
+    condition     = length(trimspace(var.hosted_zone_id)) > 0
+    error_message = "hosted_zone_id must be set for the public HTTPS deployment."
+  }
+}
+variable "acm_certificate_arn" {
+  type        = string
+  description = "Issued ACM certificate ARN in aws_region, covering domain_name."
+  validation {
+    condition     = can(regex("^arn:[^:]+:acm:[^:]+:[0-9]{12}:certificate/[0-9a-fA-F-]+$", var.acm_certificate_arn))
+    error_message = "acm_certificate_arn must be a valid ACM certificate ARN."
+  }
 }
 variable "tags" {
   type    = map(string)
