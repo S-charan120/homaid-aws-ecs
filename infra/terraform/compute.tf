@@ -130,7 +130,7 @@ resource "aws_ecs_task_definition" "web" {
   container_definitions = jsonencode([{
     name         = "web"
     image        = "${aws_ecr_repository.web.repository_url}:bootstrap"
-    essential = true
+    essential    = true
     portMappings = [{ containerPort = 80, hostPort = 80, protocol = "tcp" }]
     logConfiguration = {
       logDriver = "awslogs"
@@ -215,7 +215,7 @@ resource "aws_cloudwatch_metric_alarm" "api_unhealthy" {
     TargetGroup  = aws_lb_target_group.api.arn_suffix
     LoadBalancer = aws_lb.app.arn_suffix
   }
-  treat_missing_data  = "notBreaching"
+  treat_missing_data = "notBreaching"
   tags               = local.tags
 }
 resource "aws_cloudwatch_metric_alarm" "alb_5xx" {
@@ -228,6 +228,6 @@ resource "aws_cloudwatch_metric_alarm" "alb_5xx" {
   threshold           = 5
   comparison_operator = "GreaterThanOrEqualToThreshold"
   dimensions          = { LoadBalancer = aws_lb.app.arn_suffix }
-  treat_missing_data = "notBreaching"
+  treat_missing_data  = "notBreaching"
   tags                = local.tags
 }
