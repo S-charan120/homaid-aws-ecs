@@ -17,6 +17,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Validate local Markdown links
+        run: python3 scripts/check-markdown-links.py
       - name: Install API dependencies
         working-directory: api
         run: npm ci --no-audit --no-fund
