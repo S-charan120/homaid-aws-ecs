@@ -35,7 +35,3 @@ flowchart TB
 ## Release path
 
 A push to `main` runs repository validation. If AWS repository variables are configured, GitHub Actions obtains short-lived credentials, builds and pushes commit-SHA images to ECR, registers ECS task-definition revisions, updates both services and waits for stability. ECS deployment circuit breakers roll back failed service deployments.
-
-## Evidence boundary
-
-Terraform and workflow files describe the deployment. GitHub validation proves checks and image builds; it does not prove AWS resources were applied or a live ECS rollout occurred.
