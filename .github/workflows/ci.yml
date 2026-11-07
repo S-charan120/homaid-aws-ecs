@@ -75,7 +75,7 @@ jobs:
           done
           curl -fsS "http://localhost:8080/api/bookings/$BOOKING_ID" -H "X-Booking-Token: $ACCESS_TOKEN" | jq -e '.status == "completed"' >/dev/null
           echo "Booking creation, admin state transitions and customer-token retrieval passed."
-      - name: Upload generated dependency lockfiles
+      - name: Upload committed dependency lockfiles
         if: always()
         uses: actions/upload-artifact@v4
         with:
