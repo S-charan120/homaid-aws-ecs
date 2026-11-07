@@ -1,5 +1,5 @@
 output "application_url" {
-  value = var.domain_name != "" ? "http://${var.domain_name}" : "http://${aws_lb.app.dns_name}"
+  value = "https://${var.domain_name}"
 }
 output "alb_dns_name" { value = aws_lb.app.dns_name }
 output "ecs_cluster_name" { value = aws_ecs_cluster.main.name }
