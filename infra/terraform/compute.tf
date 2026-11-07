@@ -192,7 +192,7 @@ resource "aws_ecs_service" "web" {
     enable   = true
     rollback = true
   }
-  health_check_grace_period_seconds  = 60
+  health_check_grace_period_seconds = 60
   network_configuration {
     subnets          = aws_subnet.private[*].id
     security_groups  = [aws_security_group.tasks.id]
