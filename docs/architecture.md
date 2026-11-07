@@ -34,4 +34,4 @@ flowchart TB
 
 ## Release path
 
-A push to `main` or a manual `workflow_dispatch` against `main` runs repository validation. If AWS repository variables are configured and the `aws-production` environment permits the branch, GitHub Actions obtains short-lived credentials, builds and pushes commit-SHA images to ECR, registers ECS task-definition revisions, updates both services and waits for stability. Both the API and web ECS services have deployment circuit-breaker rollback enabled.
+A push to `main` or a manual `workflow_dispatch` against `main` runs repository validation. If AWS repository variables are configured and the `aws-production` environment permits the branch, GitHub Actions obtains short-lived credentials, builds and pushes commit-SHA images to ECR, registers ECS task-definition revisions, updates both services and waits for stability. Both ECS services (API and web) have deployment circuit-breaker rollback enabled.
