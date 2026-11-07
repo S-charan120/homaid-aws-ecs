@@ -10,9 +10,9 @@ resource "aws_iam_role" "github_actions" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Effect = "Allow"
+      Effect    = "Allow"
       Principal = { Federated = local.github_oidc_arn }
-      Action = "sts:AssumeRoleWithWebIdentity"
+      Action    = "sts:AssumeRoleWithWebIdentity"
       Condition = {
         StringEquals = {
           "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
@@ -31,13 +31,13 @@ resource "aws_iam_role_policy" "github_deploy" {
     Statement = [
       { Effect = "Allow", Action = ["ecr:GetAuthorizationToken"], Resource = "*" },
       {
-        Effect = "Allow"
-        Action = ["ecr:BatchCheckLayerAvailability", "ecr:CompleteLayerUpload", "ecr:DescribeImages", "ecr:InitiateLayerUpload", "ecr:PutImage", "ecr:UploadLayerPart"]
+        Effect   = "Allow"
+        Action   = ["ecr:BatchCheckLayerAvailability", "ecr:CompleteLayerUpload", "ecr:DescribeImages", "ecr:InitiateLayerUpload", "ecr:PutImage", "ecr:UploadLayerPart"]
         Resource = [aws_ecr_repository.api.arn, aws_ecr_repository.web.arn]
       },
       {
-        Effect = "Allow"
-        Action = ["ecs:DescribeServices", "ecs:UpdateService"]
+        Effect   = "Allow"
+        Action   = ["ecs:DescribeServices", "ecs:UpdateService"]
         Resource = [aws_ecs_service.api.id, aws_ecs_service.web.id]
       },
       {
