@@ -90,4 +90,4 @@ MongoDB remains MongoDB (Atlas or an approved private endpoint); it is not silen
 
 ## Project intent
 
-This is a practical portfolio implementation of AWS container delivery and operations, not a claim of a continuously running production service. The repository favors traceable changes, least privilege, explicit setup, and verifiable evidence over unmeasured performance claims.
+This is a practical portfolio implementation of AWS container delivery and operations. The repository favors traceable changes, least privilege, explicit setup, and verifiable evidence over unmeasured performance claims.
