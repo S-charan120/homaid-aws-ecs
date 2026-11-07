@@ -56,6 +56,8 @@ jobs:
         run: |
           set -euo pipefail
           docker compose up -d --build
+          curl -fsS http://localhost:8080/health | grep -qi ok
+          curl -fsS http://localhost:8080/ready | jq -e '.status == "ready"' >/dev/null
           cleanup() { docker compose down -v --remove-orphans; }
           trap cleanup EXIT
           for attempt in $(seq 1 45); do
