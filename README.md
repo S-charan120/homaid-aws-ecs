@@ -1,76 +1,98 @@
 # Homaid — Home Services Booking Platform on AWS
 
-A full-stack booking application built with React.js, Node.js REST APIs and MongoDB. Separate Docker images are stored in Amazon ECR and run on Amazon ECS Fargate. Terraform provisions the VPC, ALB, ECS services, IAM, ECR, CloudWatch and optional Route 53 DNS. GitHub Actions uses GitHub OIDC for short-lived AWS credentials.
+> **Portfolio project · AWS ECS Fargate · Terraform · GitHub Actions**
 
-> **Implementation status:** Application code, Docker configuration, Terraform and GitHub Actions are source-controlled. A live AWS deployment and the resume's “under 6 minutes” deployment claim are **not yet verified**. No AWS resources are provisioned by this repository automatically.
+Homaid is a full-stack home-services booking application delivered as two containerized workloads on Amazon ECS Fargate. This repository demonstrates the path from application code to repeatable infrastructure, immutable container artifacts, controlled releases, and operational visibility.
 
-## Resume-aligned implementation
+## At a glance
 
-| Resume item | Repository implementation |
+| Area | Implementation |
 |---|---|
-| React.js / Node.js / MongoDB | React booking UI, Express REST API, MongoDB |
-| Docker | Separate web and API Dockerfiles |
-| ECR / ECS | Two ECR repositories; two ECS Fargate services |
-| Terraform | VPC, public/private subnets, ALB, ECS, IAM, ECR, Route 53 option |
-| GitHub Actions | API tests, frontend build, Docker build, ECR push, ECS task-definition update and rollout wait |
-| CloudWatch | ECS log groups, Container Insights and ALB alarms |
-| Route 53 | Optional ALB alias record for an existing hosted zone |
-
-MongoDB is external (MongoDB Atlas or an approved private MongoDB endpoint); it is not silently replaced with RDS. For Atlas, allowlist the NAT egress IP or configure private connectivity.
+| Application | React frontend · Node.js/Express REST API · MongoDB |
+| Runtime | Amazon ECS on AWS Fargate (web + API services) |
+| Networking | VPC, public ALB, public/private subnets, NAT egress |
+| Delivery | GitHub Actions → OIDC → ECR → ECS task-definition revision |
+| Infrastructure | Terraform |
+| Operations | CloudWatch Logs, Container Insights, ALB/ECS alarms |
+| Secrets | AWS Secrets Manager (runtime injection) |
 
 ## Architecture
 
 ```mermaid
-flowchart TB
-  B[Browser] --> DNS[Route 53 optional]
-  DNS --> ALB[Public Application Load Balancer]
-  ALB -->|/api/*| API[ECS Fargate API]
-  ALB -->|other paths| WEB[ECS Fargate React/Nginx]
-  API --> M[(MongoDB Atlas)]
-  API --> CW[CloudWatch Logs]
+flowchart LR
+  U[Browser] -->|HTTPS| ALB[Application Load Balancer]
+  ALB -->|/api/*| API[ECS Fargate · API]
+  ALB -->|/*| WEB[ECS Fargate · Web]
+  API --> DB[(MongoDB Atlas / external MongoDB)]
+  API --> SM[Secrets Manager]
+  API --> CW[CloudWatch]
   WEB --> CW
-  GH[GitHub Actions] -->|OIDC role| AWS[AWS account]
-  GH -->|build and push SHA images| ECR[Amazon ECR]
-  ECR --> ECS[ECS task-definition revisions]
+  GH[GitHub Actions] -->|OIDC| IAM[AWS deployment role]
+  GH -->|build · push| ECR[Amazon ECR]
+  ECR --> TD[Immutable task definitions]
+  TD --> ECS[ECS services]
 ```
 
-ECS tasks use private subnets without public IPs. The ALB is public. The sample uses one NAT Gateway to reduce fixed networking cost; this is a learning trade-off, not multi-AZ NAT resilience.
+## Repository map
 
-## Repository structure
+```text
+.
+├── api/                    # REST API, domain logic and tests
+├── web/                    # React app and Nginx reverse proxy
+├── infra/terraform/         # VPC, ALB, ECS, IAM, ECR, logs and alarms
+├── .github/workflows/ci.yml # Validation and opt-in AWS release workflow
+├── docs/
+│   ├── architecture.md
+│   ├── deployment.md
+│   ├── security.md
+│   ├── runbook.md
+│   ├── costs.md
+│   └── metrics.md
+└── docker-compose.yml        # Local development stack
+```
 
-- `api/`: booking API, domain validation, state transitions and tests.
-- `web/`: React application and Nginx reverse proxy.
-- `infra/terraform/`: VPC, ALB, ECS/Fargate, ECR, IAM, logs, alarms and Route 53 option.
-- `.github/workflows/ci.yml`: pull-request validation and opt-in AWS deployment.
-- `docs/`: architecture, deployment, security, runbook, costs and measurement notes.
+## Delivery lifecycle
 
-## Run locally
+1. **Develop** — change API or frontend; run focused tests locally.
+2. **Validate** — pull-request workflow runs API tests/checks and frontend build.
+3. **Package** — build separate web/API images and tag them with the commit SHA.
+4. **Publish** — authenticate to AWS through GitHub OIDC; push immutable images to ECR.
+5. **Release** — register task-definition revisions and update ECS services.
+6. **Verify** — wait for service stability and inspect target health/logs/alarms.
+7. **Recover** — redeploy a known-good task-definition revision and confirm health.
 
-Requirements: Node.js 22 and Docker Compose v2.
+See [deployment guide](docs/deployment.md) for setup and release commands, [security](docs/security.md) for trust boundaries, and [runbook](docs/runbook.md) for incident triage.
+
+## Local development
+
+Prerequisites: Node.js 22, Docker and Docker Compose v2.
 
 ```bash
 cp .env.example .env
-# Replace ADMIN_API_TOKEN with a long random value.
+# Set a strong local ADMIN_API_TOKEN in .env
 docker compose up --build
 ```
 
-Open http://localhost:8080. The local Compose stack includes MongoDB. The API is proxied through the web container at `/api`.
-
-API tests:
+Open http://localhost:8080. Compose starts the web, API and local MongoDB services.
 
 ```bash
-cd api
-npm install
-npm test
-npm run check
+cd api && npm ci && npm test && npm run check
+cd ../web && npm ci && npm run build
 ```
 
-## AWS deployment
+## Infrastructure and deployment
 
-Read [deployment](docs/deployment.md), [security](docs/security.md) and [costs](docs/costs.md) before applying Terraform. Configure encrypted remote state, AWS identity, GitHub OIDC and MongoDB access first. Never commit `terraform.tfvars`, state files, MongoDB connection strings or admin tokens.
+Terraform provisions the AWS foundation; the GitHub Actions AWS deployment is intentionally **opt-in**. Before applying, configure remote state with locking/encryption, review the plan, configure GitHub OIDC trust, and populate runtime secret values in Secrets Manager. See [deployment](docs/deployment.md).
 
-After Terraform creates the ECS services, store values in the two Secrets Manager secret containers. The first successful GitHub Actions deployment publishes the initial image tags and registers immutable task-definition revisions pointing to that commit SHA.
+MongoDB remains MongoDB (Atlas or an approved private endpoint); it is not silently substituted with RDS. For Atlas, configure network access for the workload's egress or use private connectivity.
 
-## Evidence discipline
+## Evidence and scope
 
-The resume lists deployment in under 6 minutes. This project contains a measurement template but does not claim that duration until multiple successful runs are recorded with comparable start/end definitions. See [metrics](docs/metrics.md).
+- Source, tests, Terraform and CI/CD configuration are version-controlled.
+- GitHub Actions validation is repeatable; inspect the Actions tab for the latest run.
+- A live AWS deployment, end-to-end production traffic, and the resume's **under-six-minute** release metric are not asserted until deployment evidence and repeatable measurements are recorded.
+- NAT Gateway, ALB, Fargate, and CloudWatch can incur charges. Review [cost guidance](docs/costs.md), use budgets, and destroy lab resources when finished.
+
+## Project intent
+
+This is a practical portfolio implementation of AWS container delivery and operations—not a claim of a continuously running production service. The repository favors traceable changes, least privilege, explicit setup, and verifiable evidence over screenshots or unmeasured performance claims.
