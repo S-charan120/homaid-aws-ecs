@@ -1,6 +1,9 @@
 services:
   web:
-    build: ./web
+    build:
+      context: ./web
+      args:
+        NGINX_CONFIG: nginx-compose.conf
     ports: ["8080:80"]
     depends_on:
       api:
