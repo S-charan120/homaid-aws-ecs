@@ -15,4 +15,4 @@
 - The ALB exposes HTTP in the learning baseline. Configure ACM and an HTTPS listener before using a real production domain.
 
 ## Delivery path
-A push to `main` runs validation. Once AWS repository variables are configured, GitHub Actions assumes the repository-scoped IAM role through OIDC, builds and pushes SHA-tagged images to ECR, registers task-definition revisions with those immutable image tags, updates both ECS services and waits for stability.
+A push to `main` runs validation. Once AWS repository variables are configured, GitHub Actions assumes the repository-scoped IAM role through OIDC, builds and pushes SHA-tagged images to ECR, registers task-definition revisions with those immutable image tags, updates both ECS services and waits for stability. ECS deployment circuit breakers automatically roll back failed service deployments to the last known good task revision.
