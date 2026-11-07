@@ -7,6 +7,13 @@ import SiteHeader from './components/SiteHeader.jsx';
 
 const API_BASE = '/api';
 
+// Idempotency keys are identifiers, not credentials. Keep booking usable in
+// older/non-secure local browser contexts; public deployments must use HTTPS.
+function createIdempotencyKey() {
+  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+  return `booking-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
 export default function App() {
   const [services, setServices] = useState([]);
   const [selectedServiceId, setSelectedServiceId] = useState('');
@@ -54,7 +61,7 @@ export default function App() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Idempotency-Key': crypto.randomUUID()
+          'Idempotency-Key': createIdempotencyKey()
         },
         body: JSON.stringify({
           ...formValues,
