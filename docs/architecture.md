@@ -11,7 +11,7 @@
 
 ```mermaid
 flowchart TB
-    Browser[Browser] --> ALB[Public ALB :80]
+    Browser[Browser] -->|HTTPS :443; HTTP :80 redirects| ALB[Public ALB]
     ALB -->|/api/*| API[ECS Fargate API :8081]
     ALB -->|other paths| Web[ECS Fargate Web :80]
     API -->|TLS connection string| Mongo[(MongoDB Atlas / external)]
@@ -30,7 +30,7 @@ flowchart TB
 - A single NAT Gateway provides task egress to MongoDB Atlas and package endpoints. It reduces fixed cost but creates an AZ dependency.
 - The task security group accepts web/API ports only from the ALB security group.
 - GitHub Actions assumes an immutable repository-ID and environment-scoped IAM role through OIDC. The `aws-production` environment must restrict deployments to `main`; no long-lived AWS access key is required.
-- The baseline listener is HTTP. Configure ACM, HTTPS and redirect before a public production domain.
+- Terraform provisions the HTTPS listener on 443 and an HTTP listener on 80 that redirects to HTTPS. An issued ACM certificate matching the configured hostname, DNS validation, and live TLS/redirect acceptance are deployment prerequisites.
 
 ## Release path
 
