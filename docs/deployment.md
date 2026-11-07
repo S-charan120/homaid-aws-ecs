@@ -14,7 +14,8 @@ The sample intentionally has no backend configured. For shared work, configure e
 ```bash
 cd infra/terraform
 cp terraform.tfvars.example terraform.tfvars
-# Set AWS region, GitHub OIDC provider and optional Route 53 values.
+# Set AWS region, GitHub OIDC provider, domain_name, hosted_zone_id,
+# and acm_certificate_arn (an ISSUED certificate in the ALB's region).
 terraform init
 terraform fmt -check -recursive
 terraform validate
@@ -64,8 +65,8 @@ Terraform creates ECS services and task definitions using a `bootstrap` image ta
 
 Check ALB target health and CloudWatch logs. If tasks fail before secrets are populated, they will not become healthy.
 
-## 6. Route 53
-Optionally set `domain_name` and `hosted_zone_id` in `terraform.tfvars` to create an ALB alias record. The sample listener is HTTP-only; do not use it for a real production domain until an ACM certificate, HTTPS listener and HTTP-to-HTTPS redirect are configured.
+## 6. Mandatory public HTTPS / Route 53
+Public deployment is HTTPS-only by design. Before Terraform apply, set `domain_name`, `hosted_zone_id`, and `acm_certificate_arn` in `terraform.tfvars`. Request or import an **ISSUED ACM certificate in the same AWS region as the ALB**, covering the exact hostname; validate DNS ownership first. Terraform creates the Route 53 ALB alias, an HTTPS:443 listener with that certificate, and an HTTP:80 listener that returns a 301 redirect to HTTPS. The ALB security group permits public 80/443 only; task ports remain ALB-only. The `application_url` output is always `https://<domain_name>`; the raw ALB DNS name is not presented as a public application URL because the certificate is for your custom domain. Do not deploy publicly until certificate issuance and DNS resolution are verified.
 
 ## 7. CI dependency reproducibility
 The repository commits `api/package-lock.json` and `web/package-lock.json`. GitHub Actions installs from these lockfiles with `npm ci`; CI does not auto-commit dependency updates. Update dependencies deliberately in a reviewed commit (`npm install` in the relevant package directory), inspect the lockfile diff, then run the full validation workflow.
