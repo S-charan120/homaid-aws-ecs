@@ -15,12 +15,12 @@ function validateBooking(input) {
   const errors = [];
   if (!input || typeof input !== 'object') return ['A JSON booking object is required'];
   if (!services.some(s => s.id === input.serviceId)) errors.push('serviceId is not in the service catalogue');
-  if (typeof input.customerName !== 'string' || input.customerName.trim().length < 2 || input.customerName.length > 100) errors.push('customerName must be 2-100 characters');
+  if (typeof input.customerName !== 'string' || input.customerName.trim().length < 2 || input.customerName.trim().length > 100) errors.push('customerName must be 2-100 characters');
   if (typeof input.customerEmail !== 'string' || input.customerEmail.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.customerEmail)) errors.push('customerEmail must be valid');
-  if (typeof input.address !== 'string' || input.address.trim().length < 8 || input.address.length > 500) errors.push('address must be 8-500 characters');
+  if (typeof input.address !== 'string' || input.address.trim().length < 8 || input.address.trim().length > 500) errors.push('address must be 8-500 characters');
   const date = new Date(input.scheduledAt);
   if (!input.scheduledAt || Number.isNaN(date.getTime()) || date.getTime() < Date.now() + 60 * 60 * 1000) errors.push('scheduledAt must be at least one hour in the future');
-  if (input.notes !== undefined && (typeof input.notes !== 'string' || input.notes.length > 1000)) errors.push('notes must be at most 1000 characters');
+  if (input.notes !== undefined && (typeof input.notes !== 'string' || input.notes.trim().length > 1000)) errors.push('notes must be at most 1000 characters');
   return errors;
 }
 function canTransition(from, to) { return Boolean(transitions[from] && transitions[from].includes(to)); }
