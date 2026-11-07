@@ -31,6 +31,8 @@ jobs:
       - name: Build React application
         working-directory: web
         run: npm run build
+      - name: Validate deployment contracts
+        run: python3 scripts/check-deployment-contract.py
       - name: Validate Compose model
         env:
           ADMIN_API_TOKEN: local-ci-only-token
@@ -88,7 +90,7 @@ jobs:
           retention-days: 7
 
   deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.AWS_ROLE_TO_ASSUME != ''
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' && vars.AWS_ROLE_TO_ASSUME != ''
     needs: validate
     runs-on: ubuntu-latest
     environment: aws-production
