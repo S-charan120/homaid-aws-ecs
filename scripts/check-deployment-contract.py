@@ -85,7 +85,7 @@ def main() -> None:
     assert "deployment_circuit_breaker" in api_service, (
         "the API ECS service must retain deployment circuit-breaker rollback"
     )
-    assert "both ECS services" in architecture.lower() or "api and web services" in architecture.lower(), (
+    assert "both ecs services" in architecture.lower() or "api and web services" in architecture.lower(), (
         "architecture guide must describe rollback protection for both services"
     )
     assert "both api and web services" in readme.lower(), (
