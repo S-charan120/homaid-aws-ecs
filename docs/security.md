@@ -10,7 +10,7 @@
 - MongoDB access uses an application connection string in Secrets Manager, not source control.
 
 ## Before production
-- Add ACM TLS termination and redirect HTTP to HTTPS.
+- Configure an issued ACM certificate for the required hostname and verify the Terraform-managed HTTPS listener (443) and HTTP-to-HTTPS redirect (80) before public deployment. Terraform provisions these controls; certificate issuance, DNS ownership, and live TLS/redirect acceptance remain deployment prerequisites.
 - Use a private MongoDB connectivity option where feasible; otherwise tightly scope Atlas network access to the NAT egress IP.
 - Configure remote Terraform state with encryption, locking and least-privilege access.
 - Enable dependency/image scanning, secret scanning and patch automation.
